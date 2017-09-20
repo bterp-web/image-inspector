@@ -1,0 +1,98 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../app-layout/app-layout.html">
+<link rel="import" href="../img-pan-zoom/img-pan-zoom.html">
+<link rel="import" href="../lrnsys-button/lrnsys-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+
+<!--
+`image-inspector`
+Zoom, Rotate, Mirror, Download, and View image
+
+@demo demo/index.html
+-->
+
+<dom-module id="image-inspector">
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
+
+      app-toolbar {
+        width: 90%;
+        background: #ddd;
+        margin: 2em auto;
+        z-index: 1;
+      }
+
+      .top {
+        top: 8em;
+      }
+    </style>
+    <app-toolbar>
+      <lrnsys-button alt="Zoom in" icon="icons:zoom-in" on-tap="zoomIn" hover-class="blue  white-text"></lrnsys-button>
+      <lrnsys-button alt="Zoom out" icon="icons:zoom-out" on-tap="zoomOut" hover-class="blue  white-text"></lrnsys-button>
+      <lrnsys-button alt="Rotate right" icon="image:rotate-right" on-tap="rotateRight" hover-class="blue  white-text"></lrnsys-button>
+      <lrnsys-button rotateleft alt="Rotate left" icon="image:rotate-left" on-tap="rotateLeft" hover-class="blue  white-text"></lrnsys-button>
+      <lrnsys-button alt="Mirror image" icon="image:flip" on-tap="mirrorImage" hover-class="blue  white-text"></lrnsys-button>
+      <lrnsys-button alt="Open in new window" icon="icons:launch" href="[[src]]" target="_blank" hover-class="blue  white-text"></lrnsys-button>
+      <slot></slot>
+    </app-toolbar>
+    <img-pan-zoom id="img" src="[[src]]"></img-pan-zoom>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'image-inspector',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'image-inspector',
+        },
+        // Starting point for image rotation
+        degrees: {
+          type: Number,
+          value: 0
+        },
+        // Image source
+        src: {
+          type: String,
+        },
+        rotateleft: {
+          type: Boolean,
+          notify: true,
+        }
+      },
+      rotateRight: function () {
+        var img = this.$$('#img');
+        var degrees = this.degrees += 90;
+        img.style.webkitTransform = "rotate(" + degrees + "deg)";
+        img.style.margin = "2em";
+        img.toggleClass("top");
+      },
+      rotateLeft: function () {
+        var img = this.$$('#img');
+        var degrees = this.degrees += -90;
+        img.style.webkitTransform = "rotate(" + degrees + "deg)";
+        img.toggleClass("top");
+      },
+      mirrorImage: function () {
+        var img = this.$$('#img');
+        if (img.style.webkitTransform === 'scaleX(1)') {
+          img.style.webkitTransform = "scaleX(-1)";
+        } else {
+          img.style.webkitTransform = "scaleX(1)";
+        }
+      },
+      zoomIn: function () {
+        this.$$('#img').zoomIn();
+      },
+      zoomOut: function () {
+        this.$$('#img').zoomOut();
+      },
+    });
+  </script>
+</dom-module>
